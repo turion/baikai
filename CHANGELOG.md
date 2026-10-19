@@ -7,6 +7,28 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [baikai-claude 0.7.0.1] - 2026-10-19
+
+Fork-only patch release (turion/baikai), not published to Hackage. It
+backports one change from baikai master (0.8 line, commit `4ce53b90`,
+"feat(claude): put a cache breakpoint on the system prompt") onto
+baikai-claude 0.7.0.0, so consumers still on baikai `^>=0.7` get it. It builds
+against baikai 0.7.0.0 and 0.7.1.0 alike; the baikai package itself is
+unchanged.
+
+### Added
+
+- A `cacheRetention` of `CacheRetentionShort` or `CacheRetentionLong` now also
+  puts a `cache_control` breakpoint on the system prompt, which is sent as one
+  text block instead of a plain string. The top-level automatic marker caches
+  only up to the end of the request, so two requests sharing a static system
+  prompt but differing in their first user message never hit; with the
+  system-prompt breakpoint the second reads the shared prefix from the cache.
+  The block carries the same TTL as the top-level and last-tool markers;
+  together they use three of Anthropic's four breakpoints. Requests without
+  retention, or without a system prompt, are unchanged. A new `baikai-smoke`
+  case checks the hit live.
+
 ## [baikai 0.7.0.0] - 2026-09-08
 
 ### Added
